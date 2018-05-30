@@ -1,7 +1,7 @@
 import peewee
 import requests
 
-db = peewee.SqliteDatabase('dexhunt.db')
+db = peewee.SqliteDatabase('/dexhunt.db')
 
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
@@ -31,11 +31,14 @@ class DeviceModel(BaseModel):
         enabledVal = "0"
         if bool_value:
             enabledVal = "1"
-
+    
         if this.is_connected:
-            r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal})
-            print(r.status_code, r.reason)
-            print(r.text[:300])
+            try:
+                r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal}, timeout=2)
+                print(r.status_code, r.reason)
+                print(r.text[:300])
+            except:
+                print("Connection Error")
 
     def setRGB(this, ledNum, r, g, b):
         print("http://" + this.ipaddr + "/setRGB")
@@ -44,9 +47,12 @@ class DeviceModel(BaseModel):
         b = clamp(b, 0, 255)
 
         if this.is_connected:
-            r = requests.post("http://" + this.ipaddr + "/setRGB", data={'ledNum': str(ledNum), 'r': str(r), 'g': str(g), 'b': str(b)})
-            print(r.status_code, r.reason)
-            print(r.text[:300])
+            try:
+                r = requests.post("http://" + this.ipaddr + "/setRGB", data={'ledNum': str(ledNum), 'r': str(r), 'g': str(g), 'b': str(b)}, timeout=2)
+                print(r.status_code, r.reason)
+                print(r.text[:300])
+            except:
+                print("Connection Error")
 
 def create_tables():
     with db:

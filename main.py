@@ -35,24 +35,26 @@ def main():
     def check_password(password):            
         for meter in meters:
                 meter.setValue(random.choice(range(10)))
-        if password.lower() in colors.colornames:
-            r,g,b = colors.colornames[password.lower()]
-            device = DeviceModel.get(is_connected=True)
-            device.setRGB(0,r,g,b)
-            device.setRGB(1,r,g,b)
-        if password == "ON1":
-            device = DeviceModel.get(is_connected=True)
-            device.setGameStatus(0, 1)
-        if password == "OFF1":
-            device = DeviceModel.get(is_connected=True)
-            device.setGameStatus(0, 0)
-        if password == "ON2":
-            device = DeviceModel.get(is_connected=True)
-            device.setGameStatus(1, 1)
-        if password == "OFF2":
-            device = DeviceModel.get(is_connected=True)
-            device.setGameStatus(1, 0)
-
+        try:
+            device = DeviceModel.get(is_connected = True)
+            if password.lower() in colors.colornames:
+                r,g,b = colors.colornames[password.lower()]
+                device.setRGB(0,r,g,b)
+                device.setRGB(1,r,g,b)
+            if password == "ON1":
+                device = DeviceModel.get(is_connected=True)
+                device.setGameStatus(0, 1)
+            if password == "OFF1":
+                device = DeviceModel.get(is_connected=True)
+                device.setGameStatus(0, 0)
+            if password == "ON2":
+                device = DeviceModel.get(is_connected=True)
+                device.setGameStatus(1, 1)
+            if password == "OFF2":
+                device = DeviceModel.get(is_connected=True)
+                device.setGameStatus(1, 0)
+        except DeviceModel.DoesNotExist:
+            print("No Connected Devices")
 
     rect = BorderRect(400, 150)
 
