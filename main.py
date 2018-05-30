@@ -11,6 +11,8 @@ from widgets import Meter
 from widgets import TypewriterText
 from widgets import TypewriterCode
 
+from networkmodel import DeviceModel
+
 from random import randint
 import random
 import os
@@ -24,19 +26,33 @@ def main():
     workSurface = pygame.Surface((1280,720))
     # workSurface.fill(colors.green_bg)
     shaderSurface = pygame.Surface((1280,720))
-    blurShader = BlurShader(3)
+    # blurShader = BlurShader(3)
 
     crtTile = pygame.image.load(os.path.join('res','image','crtsim_scanlines.png'))
-    crtTile = pygame.transform.smoothscale(crtTile, (20, 10))
+    crtTile = pygame.transform.scale(crtTile, (20, 10))
     crtPixelShader = OverlayShader(crtTile)
 
-    def check_password(password):
-        if password == "PASSWORD":
-            for meter in meters:
-                meter.setValue(10)
-        else:
-            for meter in meters:
+    def check_password(password):            
+        for meter in meters:
                 meter.setValue(random.choice(range(10)))
+        if password.lower() in colors.colornames:
+            r,g,b = colors.colornames[password.lower()]
+            device = DeviceModel.get(is_connected=True)
+            device.setRGB(0,r,g,b)
+            device.setRGB(1,r,g,b)
+        if password == "ON1":
+            device = DeviceModel.get(is_connected=True)
+            device.setGameStatus(0, 1)
+        if password == "OFF1":
+            device = DeviceModel.get(is_connected=True)
+            device.setGameStatus(0, 0)
+        if password == "ON2":
+            device = DeviceModel.get(is_connected=True)
+            device.setGameStatus(1, 1)
+        if password == "OFF2":
+            device = DeviceModel.get(is_connected=True)
+            device.setGameStatus(1, 0)
+
 
     rect = BorderRect(400, 150)
 
@@ -48,7 +64,7 @@ def main():
     typewriterText = TypewriterText()
     typewriterText.animateText("INPUT ENCRYPTION KEY", 1)
     typewriterCode = TypewriterCode(20, 12, msPerChar=30)
-    textBox = TextBox()
+    textBox = TextBox(maxlen=20)
 
 
     running = True
@@ -75,7 +91,7 @@ def main():
 
 
         shaderSurface.blit(workSurface, (0,0)) 
-        shaderSurface = blurShader.apply(shaderSurface)
+        # shaderSurface = blurShader.apply(shaderSurface)
         shaderSurface = crtPixelShader.apply(shaderSurface)
 
         screen.blit(shaderSurface, (0,0))

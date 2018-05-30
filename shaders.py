@@ -1,4 +1,5 @@
 import pygame
+import collections
 
 class BlurShader:
     amount = 0

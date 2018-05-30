@@ -17,16 +17,19 @@ font_trs80 = pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIA
 #stone status (connected, num unlocked)
 
 class TextBox:
-    def __init__(this):
+    def __init__(this, maxlen=0):
         this.text = ""
         this.starttime = 0
         this.endtime = 0
+        this.maxlen = maxlen
 
     def getText(this):
         return this.text
 
     def setText(this, text):
         this.text = text
+        if this.maxlen != 0:
+            this.text = this.text[0:this.maxlen]
 
     def draw(this, screen, x, y):
         cursor = ""
