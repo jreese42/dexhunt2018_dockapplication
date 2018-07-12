@@ -14,8 +14,6 @@ from widgets import TypewriterCode
 import screens
 import GameManager
 
-from networkmodel import DeviceModel
-
 from random import randint
 import random
 import os

@@ -8,8 +8,8 @@ from widgets import MumboText
 from widgets import TerminalText
 
 from random import randint
+import os
 
-from networkmodel import DeviceModel
 import colors
 import pygame
 
@@ -22,12 +22,15 @@ class LoggedOutScreen:
         self.footerText.animateText("USAF 00fb.0002.2311 74945fae569355c7", 0.5)
         self.tinytext = TypewriterText(fontSize='8')
         self.tinytext.animateText("Booting...OK\nConnect to Central Server...OK\nInitializing Gray Protocol...OK\nSpoofing JPEGs...OK\nMining Bitcoin...OK\nBuilding Usermap...OK\nArming Satellite Cluster...OK\nContacting Edge Nodes...OK\nUpdating Utilities...OK\nSpawning Batch Jobs...OK\nPreparing Celebratory Fireworks...OK\nAligning Satellite Constellation...OK\nFiring Thrusters...OK\nChecking Network Interfaces...OK\nBaking Cakes...OK\nEarning Online Degree...OK\nAligning Checksums...OK\nEnhancing Pixels...OK\nDownloading Firewall...OK\nAccessing Secure Network...OK\n\nBoot Sequence Complete\n\nVERSION 005b68d\nSystem Loaded in 30.2238s\n\nInitializing Hardware\nReady for Hardware Interface\nOK", 0.25)
-    
+        self.dexlogo = pygame.image.load(os.path.join('res','image','dexlogo_tandy.png'))
+        self.dexlogo = pygame.transform.scale(self.dexlogo, (66, 100))
+
     def draw(self,surface):
         self.typewriterText.draw(surface,160,160)
         self.footerText.draw(surface, 920,665)
         self.tinytext.draw(surface,1040,310)
         self.borderRect.draw(surface,60,60)
+        surface.blit(self.dexlogo,(80,540))
 
 class LoggingInTransitionScreen:
     def __init__(self):

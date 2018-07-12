@@ -40,6 +40,9 @@ class DeviceModel(BaseModel):
             except:
                 print("Connection Error")
 
+    def setGameTimer(self, secondsRemaining):
+        raise NotImplementedError("Game Timer Control is not implemented in networkmodel.py")
+
     def setRGB(this, ledNum, r, g, b):
         print("http://" + this.ipaddr + "/setRGB")
         r = clamp(r, 0, 255)
