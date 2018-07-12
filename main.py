@@ -77,8 +77,11 @@ def main():
                         loggedInScreen.textBoxBackspace()
                     elif event.key == pygame.K_RETURN:
                         loggedInScreen.sendLineToTerminal("TRYING PASSWORD: " + loggedInScreen.getPassword())
-                        loggedInScreen.sendLineToTerminal("PASSWORD ACCEPTED. UNLOCKING RUNE.")
-                        loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS")
+                        if (gameManager.consumePassword(loggedInScreen.getPassword())):
+                            loggedInScreen.sendLineToTerminal("PASSWORD ACCEPTED. UNLOCKING RUNE.")
+                            loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS")
+                        else:
+                            loggedInScreen.sendLineToTerminal("PASSWORD INVALID. TRY AGAIN.")
                         #gameManager.consumePassword(loggedInScreen.getPassword())
                         loggedInScreen.clearTextBox()
                     elif event.key == pygame.K_SPACE:

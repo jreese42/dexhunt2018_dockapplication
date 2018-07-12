@@ -2,6 +2,7 @@
 #from RFIDTracker import RFIDTracker
 import ntplib, time
 #import RFIDTracker
+from networkmodel import DeviceModel
 
 class CountdownClock:
     def __init__(self):
@@ -35,10 +36,13 @@ class GameManager:
         '''if the password is OK, then notify the device'''
         passwords = ["cosmic", "exoplanet"]
         try:
-            device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
+            #device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
             if password.lower() in passwords:
-                device.setGameStatus(passwords.index(password.lower()), 1)
+                #device.setGameStatus(passwords.index(password.lower()), 1)
+                return True
             
         except DeviceModel.DoesNotExist:
             #TODO: Deal with device not found
             print("Active Device not found")
+        
+        return False

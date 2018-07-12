@@ -200,7 +200,9 @@ class MumboText:
         "Arming Satellite Cluster...OK", "Contacting Edge Nodes...OK", "Updating Utilities...OK", "Spawning Batch Jobs...OK",
         "Preparing Celebratory Fireworks...OK", "Aligning Satellite Constellation...OK", "Firing Thrusters...OK", 
         "Checking Network Interfaces...OK", "Baking Cakes...OK", "Earning Online Degree...OK", "Aligning Checksums...OK", "Enhancing Pixels...OK",
-        "Downloading Firewall...OK", "Accessing Secure Network...OK"]
+        "Downloading Firewall...OK", "Accessing Secure Network...OK", "Deploying Redshirts...OK", "Degrading Infrastructure...OK",
+        "Rotating Anode...OK", "Splicing Neurons...OK", "Contesting Parking Fines...OK", "Encrypting Packets...OK", "Preparing Amino Chains...OK",
+        "Starting Skyrim...OK", "Subscribing to Streaming Service...OK", "Moving Portable Quarry...OK", "Unit Testing...Error"]
     
 
     def draw(this, screen, x, y):
