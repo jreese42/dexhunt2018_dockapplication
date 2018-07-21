@@ -30,8 +30,25 @@ def main():
             sys.exit(0)
         
     except DeviceModel.DoesNotExist:
-        #TODO: Deal with device not found
-        print("Active Device not found")
+
+        try:
+            devicecount = DeviceModel.select.where(is_connected = True).count()
+            if devicecount > 1:
+                print("Found multiple connected devices. Quitting without associating.")
+                sys.exit(1)
+            elif devicecount is 1:
+                device = DeviceModel.get(is_connected = True)
+                print("Found exactly one connected device, but it already has a tag. Scan RFID Tag to associate new tag.")
+                while not rfidTracker.rfidTagIsActive():
+                    pass
+                device.rfidtoken = rfidTracker.getActiveUid()
+                numModified = device.save()
+                print("Device associated. Modified " + str(numModified) + " rows, \tMAC=" + str(device.macaddr) + "\tTOKEN=" + str(device.rfidtoken))
+                sys.exit(0)
+            
+        except DeviceModel.DoesNotExist:
+            #TODO: Deal with device not found
+            print("Active Device not found")
 
     sys.exit(1)
 

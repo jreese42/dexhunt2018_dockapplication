@@ -7,7 +7,7 @@ class CountdownClock:
         self.synctime = 0
 
         if expiredatetime is None:
-            expiredatetime = datetime.datetime(2018,7,20, 18,30)
+            expiredatetime = datetime.datetime(2018,7,21, 14,30)
 
         try:
             ntpClient = ntplib.NTPClient()
