@@ -17,9 +17,7 @@ import GameManager
 from random import randint
 import random
 import os
-
-activeScreen = None
-
+import string
 
 def main():
     pygame.init()
@@ -35,7 +33,7 @@ def main():
     crtTile = pygame.transform.scale(crtTile, (20, 10))
     crtPixelShader = OverlayShader(crtTile)
 
-    global activeScreen
+    activeScreen = None
     
     loggedOutScreen = screens.LoggedOutScreen()
     loggingInTransition = screens.LoggingInTransitionScreen()
@@ -53,12 +51,11 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        loggingInTransition.resetAnimation()
-                        activeScreen = loggingInTransition
-                        transitionCounter = 30
             #check for a device connected
+            if gameManager.rfidTracker.rfidTagIsActive():
+                loggingInTransition.resetAnimation()
+                activeScreen = loggingInTransition
+                transitionCounter = 30
         elif activeScreen == loggingInTransition:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -72,13 +69,17 @@ def main():
                 activeScreen = loggedInScreen
             
         elif activeScreen == loggedInScreen:
+            if not gameManager.rfidTracker.rfidTagIsActive():
+                activeScreen = loggedOutScreen
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+                #if event.type == pygame.QUIT:
+                    #running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         loggedInScreen.textBoxBackspace()
                     elif event.key == pygame.K_RETURN:
+                        if loggedInScreen.getPassword().lower() == "exitprogram":
+                            running = False
                         loggedInScreen.sendLineToTerminal("TRYING PASSWORD: " + loggedInScreen.getPassword())
                         if (gameManager.consumePassword(loggedInScreen.getPassword())):
                             loggedInScreen.sendLineToTerminal("PASSWORD ACCEPTED. UNLOCKING RUNE.")
@@ -86,10 +87,9 @@ def main():
                         else:
                             loggedInScreen.sendLineToTerminal("PASSWORD INVALID. TRY AGAIN.")
                         loggedInScreen.clearTextBox()
-                    elif event.key == pygame.K_SPACE:
-                        activeScreen = loggedOutScreen
                     else:
-                        loggedInScreen.sendKeyToTextBox(event.unicode.upper())
+                        if event.unicode.upper() in string.printable:
+                            loggedInScreen.sendKeyToTextBox(event.unicode.upper())
         else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -100,7 +100,6 @@ def main():
 
 
         shaderSurface.blit(workSurface, (0,0)) 
-        # shaderSurface = blurShader.apply(shaderSurface)
         shaderSurface = crtPixelShader.apply(shaderSurface)
 
         screen.blit(shaderSurface, (0,0))

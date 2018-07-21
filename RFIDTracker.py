@@ -6,8 +6,12 @@ class RFIDTracker:
     def __init__(self):
         '''init'''
         self.rfidReader = MFRC522.MFRC522()  
-        readTask = RecurringTask(0.25, readFromRfid, [self])
+	print "Starting RFID Reader"
+        readTask = RecurringTask(1, self.readFromRfid, [self])
+	readTask.start()
         self.activeUid = None
+        self.dissapearTicksStart = 1
+	self.dissapearTicks = self.dissapearTicksStart
     def getActiveUid(self):
         '''return the active UID'''
         return self.activeUid
@@ -15,12 +19,19 @@ class RFIDTracker:
         '''return if an RFID tag is currently readable'''
         return self.activeUid is not None
     def readFromRfid(self):
-        # (status,TagType) = self.rfidReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)    
+        (status,TagType) = self.rfidReader.MFRC522_Request(self.rfidReader.PICC_REQIDL)    
         # Get the UID of the card
-        (status,uid) = MIFAREReader.MFRC522_Anticoll() 
-        if status == MIFAREReader.MI_OK:
+        (status,uid) = self.rfidReader.MFRC522_Anticoll()
+        if status == self.rfidReader.MI_OK:
+            self.dissapearTicks = self.dissapearTicksStart
             # Print UID
-            self.activeUid = ''.join(str(x) for x in uid)
-            print "Card read UID: %s" % (self.activeUid)
-        else:
-            print "status is " + str(status)
+            if self.activeUid is None:
+                self.activeUid = ''.join(str(x) for x in uid)
+                print "Card read UID: %s" % (self.activeUid)
+        elif status == self.rfidReader.MI_ERR:
+            if self.dissapearTicks == 0 and self.activeUid is not None:
+                self.dissapearTicks = self.dissapearTicksStart
+                self.activeUid = None
+                print "RFID Tag went away"
+            elif self.activeUid is not None:	
+                self.dissapearTicks = self.dissapearTicks-1

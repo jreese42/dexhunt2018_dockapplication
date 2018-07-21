@@ -27,6 +27,9 @@ class DeviceModel(BaseModel):
     class Meta:
         database = db
 
+    def getGameStatus(this):
+        return "five"
+
     def setGameStatus(this, ledNum, bool_value):
         enabledVal = "0"
         if bool_value:
