@@ -34,7 +34,7 @@ class DeviceModel(BaseModel):
     
         if this.is_connected:
             try:
-                r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal}, timeout=2)
+                r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal}, timeout=10)
                 print(r.status_code, r.reason)
                 print(r.text[:300])
             except:
@@ -43,17 +43,27 @@ class DeviceModel(BaseModel):
     def setGameTimer(self, secondsRemaining):
         raise NotImplementedError("Game Timer Control is not implemented in networkmodel.py")
 
-    def setRGB(this, ledNum, r, g, b):
-        print("http://" + this.ipaddr + "/setRGB")
-        r = clamp(r, 0, 255)
-        g = clamp(g, 0, 255)
-        b = clamp(b, 0, 255)
+    def setTimeRemaining(this, seconds):
+        print("http://" + this.ipaddr + "/setTimeRemaining")
 
         if this.is_connected:
             try:
-                r = requests.post("http://" + this.ipaddr + "/setRGB", data={'ledNum': str(ledNum), 'r': str(r), 'g': str(g), 'b': str(b)}, timeout=2)
+                r = requests.post("http://" + this.ipaddr + "/setTimeRemaining", data={'seconds': str(seconds)}, timeout=10)
                 print(r.status_code, r.reason)
                 print(r.text[:300])
+            except:
+                print("Connection Error")
+
+
+    def getScore(this):
+        print("http://" + this.ipaddr + "/getGameStatus")
+
+        if this.is_connected:
+            try:
+                r = requests.post("http://" + this.ipaddr + "/getGameStatus", timeout=10)
+                print(r.status_code, r.reason)
+                print(r.text[:300])
+                return int(r.text)
             except:
                 print("Connection Error")
 

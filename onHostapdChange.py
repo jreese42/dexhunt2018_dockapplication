@@ -3,8 +3,10 @@ import sys
 import peewee
 from networkmodel import DeviceModel
 import subprocess
+from GameTime import CountdownClock
 
 db = peewee.SqliteDatabase('/dexhunt.db')
+gameTime = CountdownClock()
 
 print(sys.argv)
 
@@ -17,9 +19,11 @@ if sys.argv[2] == "AP-STA-CONNECTED":
             device.is_connected = True
             numModified = device.save()
             print("Updated DeviceModel with MAC({}) to IP({}), affecting {} rows".format(sys.argv[3],ip_address,numModified))
+            device.setTimeRemaining(gameTime.remainingSeconds())
         except DeviceModel.DoesNotExist:
             device = DeviceModel.create(macaddr=sys.argv[3], ipaddr=ip_address, rfidtoken="", is_connected=True)
             print("Created New DeviceModel with MAC({})".format(sys.argv[3]))
+            device.setTimeRemaining(gameTime.remainingSeconds())
 
 elif sys.argv[2] == "AP-STA-DISCONNECTED":
     with db.atomic():

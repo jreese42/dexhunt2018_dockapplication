@@ -27,6 +27,7 @@ def main():
     fpsClock = pygame.time.Clock()
 
     screen = pygame.display.set_mode((1280,720))
+    #screen = pygame.display.set_mode((1280,720), pygame.FULLSCREEN)
     workSurface = pygame.Surface((1280,720))
     shaderSurface = pygame.Surface((1280,720))
 
@@ -39,7 +40,9 @@ def main():
     loggedOutScreen = screens.LoggedOutScreen()
     loggingInTransition = screens.LoggingInTransitionScreen()
     loggedInScreen = screens.LoggedInScreen()
-    activeScreen = loggedOutScreen
+    #activeScreen = loggedOutScreen
+    activeScreen=loggedInScreen
+    loggedInScreen.showFinalPuzzle()
     transitionCounter = 0
 
     gameManager = GameManager.GameManager()
@@ -65,7 +68,7 @@ def main():
                 transitionCounter = 0
                 loggedInScreen.reset()
                 loggedInScreen.sendLineToTerminal("STATUS: ARTIFACT CONNECTED.")
-                loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS: 5/8")
+                loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS: " + str(gameManager.getActiveDeviceScore()) + "/8")
                 activeScreen = loggedInScreen
             
         elif activeScreen == loggedInScreen:
@@ -79,10 +82,9 @@ def main():
                         loggedInScreen.sendLineToTerminal("TRYING PASSWORD: " + loggedInScreen.getPassword())
                         if (gameManager.consumePassword(loggedInScreen.getPassword())):
                             loggedInScreen.sendLineToTerminal("PASSWORD ACCEPTED. UNLOCKING RUNE.")
-                            loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS")
+                            loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS " + str(gameManager.getActiveDeviceScore() + "/8"))
                         else:
                             loggedInScreen.sendLineToTerminal("PASSWORD INVALID. TRY AGAIN.")
-                        #gameManager.consumePassword(loggedInScreen.getPassword())
                         loggedInScreen.clearTextBox()
                     elif event.key == pygame.K_SPACE:
                         activeScreen = loggedOutScreen

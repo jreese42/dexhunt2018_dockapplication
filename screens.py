@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 from shapes import BorderRect
 from shapes import SolidRect
 from widgets import TextBox
@@ -53,6 +54,8 @@ class LoggingInTransitionScreen:
 
 class LoggedInScreen:
     def __init__(self):
+        self.showFinal = False
+
         self.borderRect = BorderRect(1160,600,1)
 
         self.meters = []
@@ -78,6 +81,34 @@ class LoggedInScreen:
         self.statusText = TerminalText(numLines=16, fontSize='16')
         self.statusRect = BorderRect(400, 300, 2)
 
+
+        #Final puzzle UI
+        self.finalPuzzleRect = SolidRect(600, 400, 2)
+        self.finalPuzzleDecryptingText = TypewriterText(fontSize='16')
+        self.finalPuzzleDecryptingText.animateText("Decrypting Final Challenge...", 1)
+
+        finalText = '''Greetings!                            
+        We have traveled very far to meet your
+species and seek your friendship! Our species values
+order and equality above all else. We value equality
+so much that our species has evolved so that every
+individual is exactly the same height! We come in 
+peace. In order to prove your peacefulness and 
+friendship with us, please text a photo of your team
+to 571-210-7929. Do not insult us by sending a photo
+of people of different heights, though! In this 
+photo, each team member must be exactly as tall as
+the next! If you do not make yourselves the same
+height, we will immediately blow up your puny planet.
+                            Sincerely,
+                                ?̨??͟?̢               '''
+
+        
+        self.finalPuzzleEncryptedText = TypewriterText(fontstyle="alien", delayAtEndOfLine=False, fontSize='21')
+        self.finalPuzzleEncryptedText.animateText(finalText.replace('!','Q').replace('\'','O').replace('.','P').replace('-','V').replace(',','G'), 1.5, delay=1.5)
+        self.finalPuzzleDecryptedText = TypewriterText(delayAtEndOfLine=False, fontSize='21')
+        self.finalPuzzleDecryptedText.animateText(finalText[:-9], 1.5, drawBackground=True, delay=8)
+
     def reset(self):
         self.statusText.clear()
     
@@ -102,6 +133,14 @@ class LoggedInScreen:
             self.meterChangeTime = pygame.time.get_ticks() + self.meterChangePeriod
             for idx in range(5):
                 self.meters[idx].setValue(randint(2, 10))
+
+        if (self.showFinal == True):
+            finalBoxRootX = 340
+            finalBoxRootY = 140
+            self.finalPuzzleRect.draw(surface, finalBoxRootX, finalBoxRootY)
+            self.finalPuzzleDecryptingText.draw(surface, finalBoxRootX + 10, finalBoxRootY + 10)
+            self.finalPuzzleEncryptedText.draw(surface, finalBoxRootX + 10, finalBoxRootY + 36)
+            self.finalPuzzleDecryptedText.draw(surface, finalBoxRootX + 10, finalBoxRootY + 36)
     
     def sendKeyToTextBox(self, key):
         text = self.textBox.getText() + str(key)
@@ -119,3 +158,6 @@ class LoggedInScreen:
 
     def sendLineToTerminal(self, line):
         self.statusText.addLine(line)
+
+    def showFinalPuzzle(self):
+        self.showFinal = True

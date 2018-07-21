@@ -12,7 +12,16 @@ fonts = {
     '10' : pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIARaw.ttf'), 10),
     '12' : pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIARaw.ttf'), 12),
     '16' : pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIARaw.ttf'), 16),
+    '21' : pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIARaw.ttf'), 21),
     '24' : pygame.font.Font(os.path.join('res','fonts','AnotherMansTreasureMIARaw.ttf'), 24)
+}
+fonts_alien = {
+    '8' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 8),
+    '10' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 10),
+    '12' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 12),
+    '16' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 16),
+    '21' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 21),
+    '24' : pygame.font.Font(os.path.join('res','fonts','Iokharic.otf'), 24)
 }
 
 #more ideas:
@@ -79,52 +88,81 @@ class TypewriterText:
     #timing manager
     #unblit
     #blinking cursor
-    def __init__(this, fontSize='24'):
+    def __init__(this, fontSize='24', fontstyle="console", delayAtEndOfLine=True):
         this.text = []
         this.starttime = 0
         this.endtime = 0
         this.currline = 0
-        this.font=fonts.get(fontSize)
+        if (fontstyle is "console"):
+            this.font=fonts.get(fontSize)
+            if this.font is None:
+                this.font = fonts.get('24')
+                this.fontSize = 24
+        elif (fontstyle is "alien"):
+            this.font=fonts_alien.get(fontSize)
+            if this.font is None:
+                this.font = fonts_alien.get('24')
+                this.fontSize = 24
         this.fontSize = int(fontSize)
-        if this.font is None:
-            this.font = fonts.get('24')
-            this.fontSize = 24
+        this.delayAtEndOfLine = delayAtEndOfLine
 
-    def animateText(this, text, seconds, delay=0):
+    def animateText(this, text, seconds, delay=0, drawBackground=False):
         this.text = text.split('\n')
         this.starttime = pygame.time.get_ticks() + (delay * 1000)
         this.duration = seconds*1000
         this.delay = delay*1000
+        this.drawBackground = drawBackground
 
     def draw(this, screen, x, y):
         tmpText = ""
+
 
         if (this.currline < len(this.text)):
             #render the current line
 
             currtime = pygame.time.get_ticks()
-            if (this.starttime != 0):
+            if (this.starttime != 0 and currtime >= this.starttime):
                 numLetters = int(len(this.text[this.currline]) * (currtime - this.starttime) / (this.duration))
                 tmpText = this.text[this.currline][0:numLetters]
 
             #first, render any finished lines
             for idx in range(this.currline):
                 textSurface = this.font.render(this.text[idx], 0, colors.green_fg)
+                if this.drawBackground:
+                    backSurface = pygame.Surface(textSurface.get_size())
+                    backSurface.fill(colors.green_bg)
+                    screen.blit(backSurface, ( x, y + (idx * (this.fontSize + 3)))) #clear old pos
                 screen.blit(textSurface, (x,y + (idx * (this.fontSize+3))))
             #finally, render the active line
-            tmpText += "_"
-            textSurface = this.font.render(tmpText, 0, colors.green_fg)
-            screen.blit(textSurface, (x,y + (this.currline * (this.fontSize+3))))
+            if (this.currline is not 1 or currtime > this.starttime):
+                tmpText += "_"
+                textSurface = this.font.render(tmpText, 0, colors.green_fg)
+                if this.drawBackground:
+                    backSurface = pygame.Surface(textSurface.get_size())
+                    backSurface.fill(colors.green_bg)
+                    screen.blit(backSurface, ( x, y + (this.currline * (this.fontSize + 3)))) #clear old pos
+                screen.blit(textSurface, (x,y + (this.currline * (this.fontSize+3))))
 
             if (this.starttime != 0):
-                if (currtime > this.starttime + this.duration + this.delay):
-                    this.currline += 1
-                    this.starttime = pygame.time.get_ticks() + this.delay
+                if this.delayAtEndOfLine:
+                    if (currtime > (this.starttime + this.duration + this.delay)):
+                        this.currline += 1
+                        this.starttime = pygame.time.get_ticks() + this.delay
+                else:
+                    if ( ( (currtime > (this.starttime + this.duration)) and (this.currline is not 1) ) or ( (currtime > (this.starttime + this.duration)) and (this.currline is 1) )):
+                        this.currline += 1
+                        this.starttime = currtime
 
         else:
             #animation is done, just show the lines
             for idx in range(len(this.text)):
                 textSurface = this.font.render(this.text[idx], 0, colors.green_fg)
+
+                if this.drawBackground:
+                    backSurface = pygame.Surface(textSurface.get_size())
+                    backSurface.fill(colors.green_bg)
+                    screen.blit(backSurface, ( x, y + (idx * (this.fontSize + 3)))) #clear old pos
+
                 screen.blit(textSurface, (x,y + (idx * (this.fontSize+3))))
 
 
