@@ -7,8 +7,8 @@ class RFIDTracker:
         '''init'''
         self.rfidReader = MFRC522.MFRC522()  
 	print "Starting RFID Reader"
-        readTask = RecurringTask(1, self.readFromRfid, [self])
-	readTask.start()
+        self.readTask = RecurringTask(1, self.readFromRfid, [self])
+	self.readTask.start()
         self.activeUid = None
         self.dissapearTicksStart = 1
 	self.dissapearTicks = self.dissapearTicksStart
@@ -35,3 +35,5 @@ class RFIDTracker:
                 print "RFID Tag went away"
             elif self.activeUid is not None:	
                 self.dissapearTicks = self.dissapearTicks-1
+	def stop(self):
+		self.readTask.cancel()

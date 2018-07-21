@@ -7,6 +7,7 @@ class RecurringTask():
       self.hFunction = hFunction
       self.args = args
       self.thread = Timer(self.t,self.handle_function, self.args)
+      self.thread.daemon = True
 
    def handle_function(self, kwargs):
       self.hFunction()

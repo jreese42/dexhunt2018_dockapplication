@@ -12,12 +12,12 @@ class GameManager:
 
     def consumePassword(self, password):
         '''if the password is OK, then notify the device'''
-        passwords = ["cosmic", "exoplanet", "terraform", "stardust", "castor", "starbucks", "sentient", "puzzle8"]
-        normalized_password = password.lower().replace(' ', '')
+        passwords = [p.lower().replace(' ','') for p in ["cosmic", "exoplanet", "terraform", "stardust", "castor", "starbucks", "sentient", "puzzle8"]]
+        normalized_password = password.lower().replace(' ', '').strip()
         try:
             device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
             if normalized_password in passwords:
-                device.setGameStatus(passwords.index(normalized_password, 1))
+                device.setGameStatus(passwords.index(normalized_password), 1)
                 return True
             
         except DeviceModel.DoesNotExist:
@@ -29,9 +29,10 @@ class GameManager:
     def getActiveDeviceScore(self):
         try:
             device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
-            if password.lower() in passwords:
-                score = device.getScore()
-                return score
+            score = device.getScore()
+            if score is None:
+                return 0
+            return score
             
         except DeviceModel.DoesNotExist:
             #TODO: Deal with device not found

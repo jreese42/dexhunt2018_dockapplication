@@ -3,6 +3,9 @@ import requests
 
 db = peewee.SqliteDatabase('/dexhunt.db')
 
+def closeDatabase():
+	db.close()
+
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
 
@@ -27,9 +30,6 @@ class DeviceModel(BaseModel):
     class Meta:
         database = db
 
-    def getGameStatus(this):
-        return "five"
-
     def setGameStatus(this, ledNum, bool_value):
         enabledVal = "0"
         if bool_value:
@@ -37,7 +37,7 @@ class DeviceModel(BaseModel):
     
         if this.is_connected:
             try:
-                r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal}, timeout=10)
+                r = requests.post("http://" + this.ipaddr + "/setEnabled", data={'ledNum': str(ledNum), 'enabled': enabledVal}, timeout=60)
                 print(r.status_code, r.reason)
                 print(r.text[:300])
             except:
@@ -51,7 +51,7 @@ class DeviceModel(BaseModel):
 
         if this.is_connected:
             try:
-                r = requests.post("http://" + this.ipaddr + "/setTimeRemaining", data={'seconds': str(seconds)}, timeout=10)
+                r = requests.post("http://" + this.ipaddr + "/setTimeRemaining", data={'seconds': str(seconds)}, timeout=60)
                 print(r.status_code, r.reason)
                 print(r.text[:300])
             except:
@@ -63,10 +63,13 @@ class DeviceModel(BaseModel):
 
         if this.is_connected:
             try:
-                r = requests.post("http://" + this.ipaddr + "/getGameStatus", timeout=10)
+                r = requests.post("http://" + this.ipaddr + "/getGameStatus", timeout=60)
                 print(r.status_code, r.reason)
                 print(r.text[:300])
-                return int(r.text)
+		if int(r.text):
+                	return int(r.text)
+		else:
+			return 0
             except:
                 print("Connection Error")
 

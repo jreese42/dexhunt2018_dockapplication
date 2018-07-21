@@ -107,10 +107,11 @@ height, we will immediately blow up your puny planet.
         self.finalPuzzleEncryptedText = TypewriterText(fontstyle="alien", delayAtEndOfLine=False, fontSize='21')
         self.finalPuzzleEncryptedText.animateText(finalText.replace('!','Q').replace('\'','O').replace('.','P').replace('-','V').replace(',','G'), 1.5, delay=1.5)
         self.finalPuzzleDecryptedText = TypewriterText(delayAtEndOfLine=False, fontSize='21')
-        self.finalPuzzleDecryptedText.animateText(finalText[:-9], 1.5, drawBackground=True, delay=8)
+        self.finalPuzzleDecryptedText.animateText(finalText[:-9], 1.5, drawBackground=True, delay=16)
 
     def reset(self):
         self.statusText.clear()
+	self.showFinal = False
     
     def draw(self,surface):
         textBoxRootX = 440

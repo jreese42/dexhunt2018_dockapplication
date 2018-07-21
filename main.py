@@ -16,8 +16,13 @@ import GameManager
 
 from random import randint
 import random
-import os
+import os, sys
 import string
+
+#todo:
+#run everything in /etc/rc.local
+#update GameTime endtime
+
 
 def main():
     pygame.init()
@@ -49,8 +54,10 @@ def main():
     while running:
         if activeScreen == loggedOutScreen:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_ESCAPE and pygame.key.get_mods() & (pygame.KMOD_RSHIFT | pygame.KMOD_RCTRL):
+				running = False
+				sys.exit(0)
             #check for a device connected
             if gameManager.rfidTracker.rfidTagIsActive():
                 loggingInTransition.resetAnimation()
@@ -65,15 +72,16 @@ def main():
                 transitionCounter = 0
                 loggedInScreen.reset()
                 loggedInScreen.sendLineToTerminal("STATUS: ARTIFACT CONNECTED.")
-                loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS: " + str(gameManager.getActiveDeviceScore()) + "/8")
+                score = gameManager.getActiveDeviceScore()
+                loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS " + str(score) + " / 8")
+                if (score is 8):
+                                loggedInScreen.showFinalPuzzle()
                 activeScreen = loggedInScreen
             
         elif activeScreen == loggedInScreen:
             if not gameManager.rfidTracker.rfidTagIsActive():
                 activeScreen = loggedOutScreen
             for event in pygame.event.get():
-                #if event.type == pygame.QUIT:
-                    #running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_BACKSPACE:
                         loggedInScreen.textBoxBackspace()
@@ -83,7 +91,10 @@ def main():
                         loggedInScreen.sendLineToTerminal("TRYING PASSWORD: " + loggedInScreen.getPassword())
                         if (gameManager.consumePassword(loggedInScreen.getPassword())):
                             loggedInScreen.sendLineToTerminal("PASSWORD ACCEPTED. UNLOCKING RUNE.")
-                            loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS " + str(gameManager.getActiveDeviceScore() + "/8"))
+                            score = gameManager.getActiveDeviceScore()
+                            loggedInScreen.sendLineToTerminal("DECRYPTION PROGRESS " + str(score) + " / 8")
+                            if (score is 8):
+                                loggedInScreen.showFinalPuzzle()
                         else:
                             loggedInScreen.sendLineToTerminal("PASSWORD INVALID. TRY AGAIN.")
                         loggedInScreen.clearTextBox()
@@ -106,7 +117,10 @@ def main():
         pygame.display.update()
         fpsClock.tick(60)
 
+    #cleanup when finished
+    gameManager.rfidTracker.stop()
+
         
 
 if __name__=="__main__":
-    main()
+	main()
