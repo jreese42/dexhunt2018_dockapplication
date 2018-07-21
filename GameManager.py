@@ -1,5 +1,5 @@
 
-#from RFIDTracker import RFIDTracker
+from RFIDTracker import RFIDTracker
 import ntplib, time
 from networkmodel import DeviceModel
 from GameTime import CountdownClock
@@ -8,14 +8,14 @@ class GameManager:
     '''this class contains all the game logic, mostly just to keep the main file cleaner'''
     def __init__(self):
         self.gameTime = CountdownClock()
-        #self.rfidTracker = RFIDTracker()
+        self.rfidTracker = RFIDTracker()
 
     def consumePassword(self, password):
         '''if the password is OK, then notify the device'''
         passwords = ["cosmic", "exoplanet", "terraform", "stardust", "castor", "starbucks", "sentient", "puzzle8"]
         normalized_password = password.lower().replace(' ', '')
         try:
-            #device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
+            device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
             if normalized_password in passwords:
                 device.setGameStatus(passwords.index(normalized_password, 1))
                 return True
@@ -28,7 +28,7 @@ class GameManager:
 
     def getActiveDeviceScore(self):
         try:
-            #device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
+            device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
             if password.lower() in passwords:
                 score = device.getScore()
                 return score

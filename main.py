@@ -26,8 +26,8 @@ def main():
     
     fpsClock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode((1280,720))
-    #screen = pygame.display.set_mode((1280,720), pygame.FULLSCREEN)
+    #screen = pygame.display.set_mode((1280,720))
+    screen = pygame.display.set_mode((1280,720), pygame.FULLSCREEN)
     workSurface = pygame.Surface((1280,720))
     shaderSurface = pygame.Surface((1280,720))
 
@@ -40,9 +40,9 @@ def main():
     loggedOutScreen = screens.LoggedOutScreen()
     loggingInTransition = screens.LoggingInTransitionScreen()
     loggedInScreen = screens.LoggedInScreen()
-    #activeScreen = loggedOutScreen
-    activeScreen=loggedInScreen
-    loggedInScreen.showFinalPuzzle()
+    activeScreen = loggedOutScreen
+    #activeScreen=loggedInScreen
+    #loggedInScreen.showFinalPuzzle()
     transitionCounter = 0
 
     gameManager = GameManager.GameManager()
