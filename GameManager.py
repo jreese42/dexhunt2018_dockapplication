@@ -1,5 +1,5 @@
 
-from RFIDTracker import RFIDTracker
+from RFIDTracker import TickableRFIDTracker as RFIDTracker
 import ntplib, time
 from networkmodel import DeviceModel
 from GameTime import CountdownClock
@@ -9,10 +9,11 @@ class GameManager:
     def __init__(self):
         self.gameTime = CountdownClock()
         self.rfidTracker = RFIDTracker()
+        self.tickCount = 0
 
     def consumePassword(self, password):
         '''if the password is OK, then notify the device'''
-        passwords = [p.lower().replace(' ','') for p in ["cosmic", "exoplanet", "terraform", "stardust", "castor", "starbucks", "sentient", "puzzle8"]]
+        passwords = [p.lower().replace(' ','') for p in ["cosmic", "exoplanet", "symbiosis", "stardust", "castor", "starbucks", "hyperspace", "triangulum"]]
         normalized_password = password.lower().replace(' ', '').strip()
         try:
             device = DeviceModel.get(is_connected = True, rfidtoken=self.rfidTracker.getActiveUid())
@@ -39,3 +40,10 @@ class GameManager:
             print("Active Device not found")
         
         return 0
+
+    def tick(self, ms):
+        #tick the RFId tracker every 1s
+        self.tickCount += ms
+        if self.tickCount > 1000:
+            self.tickCount -= 1000 
+            self.rfidTracker.tick()

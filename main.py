@@ -29,6 +29,8 @@ def main():
     
     fpsClock = pygame.time.Clock()
 
+    pygame.mouse.set_visible(False)
+
     #screen = pygame.display.set_mode((1280,720))
     screen = pygame.display.set_mode((1280,720), pygame.FULLSCREEN)
     workSurface = pygame.Surface((1280,720))
@@ -115,6 +117,7 @@ def main():
 
         screen.blit(shaderSurface, (0,0))
         pygame.display.update()
+        gameManager.tick(60)
         fpsClock.tick(60)
 
     #cleanup when finished

@@ -8,7 +8,7 @@ class CountdownClock:
 	self.expiredatetime = expiredatetime
 
         if self.expiredatetime is None:
-            self.expiredatetime = datetime.datetime.strptime("2018-07-21 02:30", "%Y-%m-%d %H:%M")
+            self.expiredatetime = datetime.datetime.strptime("2018-08-07 17:30", "%Y-%m-%d %H:%M")
 
         #try:
             #ntpClient = ntplib.NTPClient()

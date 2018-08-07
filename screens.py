@@ -87,7 +87,7 @@ class LoggedInScreen:
         self.finalPuzzleDecryptingText = TypewriterText(fontSize='16')
         self.finalPuzzleDecryptingText.animateText("Decrypting Final Challenge...", 1)
 
-        finalText = '''Greetings!                            
+        self.finalText = '''Greetings!                            
         We have traveled very far to meet your
 species and seek your friendship! Our species values
 order and equality above all else. We value equality
@@ -95,8 +95,8 @@ so much that our species has evolved so that every
 individual is exactly the same height! We come in 
 peace. In order to prove your peacefulness and 
 friendship with us, please text a photo of your team
-to 571-210-7929. Do not insult us by sending a photo
-of people of different heights, though! In this 
+to 571-271-3235. Do not insult us by sending a photo
+of humans of different heights, though! In this 
 photo, each team member must be exactly as tall as
 the next! If you do not make yourselves the same
 height, we will immediately blow up your puny planet.
@@ -105,13 +105,19 @@ height, we will immediately blow up your puny planet.
 
         
         self.finalPuzzleEncryptedText = TypewriterText(fontstyle="alien", delayAtEndOfLine=False, fontSize='21')
-        self.finalPuzzleEncryptedText.animateText(finalText.replace('!','Q').replace('\'','O').replace('.','P').replace('-','V').replace(',','G'), 1.5, delay=1.5)
+        self.finalPuzzleEncryptedText.animateText(self.finalText.replace('!','Q').replace('\'','O').replace('.','P').replace('-','V').replace(',','G'), 1.5, delay=1.5)
         self.finalPuzzleDecryptedText = TypewriterText(delayAtEndOfLine=False, fontSize='21')
-        self.finalPuzzleDecryptedText.animateText(finalText[:-9], 1.5, drawBackground=True, delay=16)
+        self.finalPuzzleDecryptedText.animateText(self.finalText[:-9], 1.5, drawBackground=True, delay=5.5)
 
     def reset(self):
         self.statusText.clear()
 	self.showFinal = False
+
+
+        self.finalPuzzleEncryptedText = TypewriterText(fontstyle="alien", delayAtEndOfLine=False, fontSize='21')
+	self.finalPuzzleEncryptedText.animateText(self.finalText.replace('!','Q').replace('\'','O').replace('.','P').replace('-','V').replace(',','G'), 1.5, delay=1.5)
+        self.finalPuzzleDecryptedText = TypewriterText(delayAtEndOfLine=False, fontSize='21')
+        self.finalPuzzleDecryptedText.animateText(self.finalText[:-9], 1.5, drawBackground=True, delay=5.5)
     
     def draw(self,surface):
         textBoxRootX = 440
